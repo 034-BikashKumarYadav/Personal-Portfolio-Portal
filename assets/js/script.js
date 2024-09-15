@@ -34,7 +34,7 @@ $(document).ready(function () {
         e.preventDefault();
         $('html, body').animate({
             scrollTop: $($(this).attr('href')).offset().top,
-        }, 500, 'linear')
+        }, 100, 'linear')
     });
 
     // <!-- emailjs to mail contact form data -->
@@ -60,11 +60,11 @@ document.addEventListener('visibilitychange',
     function () {
         if (document.visibilityState === "visible") {
             document.title = "Portfolio | Bikash Kumar Yadav";
-            $("#favicon").attr("href", "assets/images/favicon.png");
+            $("#favicon").attr("href", "./assets/images/profile.png");
         }
         else {
             document.title = "Come Back To Portfolio";
-            $("#favicon").attr("href", "assets/images/favhand.png");
+            $("#favicon").attr("href", "assets/images/profile.png");
         }
     });
 
@@ -146,13 +146,7 @@ function showProjects(projects) {
 
 }
 
-fetchData().then(data => {
-    showSkills(data);
-});
 
-fetchData("projects").then(data => {
-    showProjects(data);
-});
 
 // <!-- tilt js effect starts -->
 VanillaTilt.init(document.querySelectorAll(".tilt"), {
@@ -190,17 +184,7 @@ document.onkeydown = function (e) {
     }
 }
 
-// Start of Tawk.to Live Chat
-var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-(function () {
-    var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
-    s1.async = true;
-    s1.src = 'https://embed.tawk.to/60df10bf7f4b000ac03ab6a8/1f9jlirg6';
-    s1.charset = 'UTF-8';
-    s1.setAttribute('crossorigin', '*');
-    s0.parentNode.insertBefore(s1, s0);
-})();
-// End of Tawk.to Live Chat
+
 
 
 /* ===== SCROLL REVEAL ANIMATION ===== */
@@ -233,12 +217,12 @@ srtop.reveal('.about .content .resumebtn', { delay: 100 });
 
 
 /* SCROLL SKILLS */
-srtop.reveal('.skills .container', { interval: 100 });
-srtop.reveal('.skills .container .bar', { delay: 100 });
+srtop.reveal('.skills-section .box-container.skills-grid', { interval: 100 });
+srtop.reveal('.skills-section .box-container', { delay: 100 });
 
-/* SCROLL EDUCATION */
-srtop.reveal('.skills .box', { interval: 100 });
-
+/* SCROLL EDUCATION 
+srtop.reveal('.skills-grid', { interval: 100 });
+*/
 /* SCROLL PROJECTS */
 srtop.reveal('.work .box', { interval: 100 });
 
@@ -253,3 +237,64 @@ srtop.reveal('.education .timeline .container', { interval: 100 });
 srtop.reveal('.contact .container', { delay: 100 });
 srtop.reveal('.contact .container .form-group', { delay: 100 });
 
+/*Skills Section Starts */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const skillBars = document.querySelectorAll('.skill-progress');
+    
+    const animateSkillBars = () => {
+        skillBars.forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            bar.style.width = width + '%';
+        });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateSkillBars();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    observer.observe(document.querySelector('.skills-section'));
+
+    // Show More functionality
+    const showMoreButtons = document.querySelectorAll('.show-more');
+    showMoreButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const details = button.previousElementSibling;
+            if (details.style.display === 'none' || details.style.display === '') {
+                details.style.display = 'block';
+                button.textContent = 'Show Less';
+            } else {
+                details.style.display = 'none';
+                button.textContent = 'Show More';
+            }
+        });
+    });
+});
+
+function downloadSourceCode() {
+    fetch(window.location.href)
+        .then(response => response.text())
+        .then(html => {
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my_tech_skills_portfolio.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error downloading portfolio:', error);
+            alert('An error occurred while downloading the portfolio. Please try again.');
+        });
+}
+
+
+/*Skills Section Ends*/
